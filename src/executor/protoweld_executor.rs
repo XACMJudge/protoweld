@@ -5,7 +5,7 @@ use crate::{
     parser::types::ProtoweldParser,
 };
 
-pub fn generate_protos(parser: &ProtoweldParser) -> Result<(), String> {
+pub fn generate_protos(parser: &ProtoweldParser) -> Result<(), &'static str> {
     for project in parser.active_projects.iter() {
         let compiler_result = get_compiler(&project.lang);
         if let Err(_) = compiler_result {

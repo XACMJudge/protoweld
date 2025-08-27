@@ -4,7 +4,7 @@ use crate::{
     parser::types::Lang,
 };
 
-pub fn get_compiler(lang: &Lang) -> Result<Box<dyn ProtobufCompiler>, String> {
+pub fn get_compiler(lang: &Lang) -> Result<Box<dyn ProtobufCompiler>, &'static str> {
     let platform_result = get_os_manager();
 
     if let Err(error) = platform_result {
@@ -19,7 +19,6 @@ pub fn get_compiler(lang: &Lang) -> Result<Box<dyn ProtobufCompiler>, String> {
         })),
         Lang::DotNet => todo!("To implement"),
         Lang::Rust => todo!("To implement"),
-        _ => Err(String::from("Protoweld do not support this lang.")),
+        _ => Err("Protoweld do not support this lang."),
     }
 }
-
