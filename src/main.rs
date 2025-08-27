@@ -17,7 +17,7 @@ fn main() {
     }
 
     let parser = result.unwrap();
-    let generation_result = generate_protos(&parser);
+    let generation_result = generate_protos(&parser, &args.filename);
 
     if let Err(error) = generation_result {
         panic!("[PROTOWELD] Generation failed. {}", error)

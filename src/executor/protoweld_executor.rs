@@ -5,11 +5,11 @@ use crate::{
     parser::types::ProtoweldParser,
 };
 
-pub fn generate_protos(parser: &ProtoweldParser) -> Result<(), &'static str> {
+pub fn generate_protos(parser: &ProtoweldParser, base_path: &String) -> Result<(), String> {
     for project in parser.active_projects.iter() {
-        let compiler_result = get_compiler(&project.lang);
+        let compiler_result = get_compiler(&project.lang, base_path);
         if let Err(_) = compiler_result {
-            panic!("[PROTOWELD] Lang parsed do not supported.")
+            return Err(String::from("[PROTOWELD] Lang parsed do not supported."));
         }
 
         let compiler: Box<dyn ProtobufCompiler> = compiler_result.unwrap();
@@ -19,10 +19,7 @@ pub fn generate_protos(parser: &ProtoweldParser) -> Result<(), &'static str> {
             return Err(error);
         }
 
-        info!(
-            "[PROTOWELD - COMPILATION] Compiled project {}",
-            project.path
-        );
+        info!("Compiled project {}", project.path);
     }
     Ok(())
 }

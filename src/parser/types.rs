@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use serde::Deserialize;
+use std::str::FromStr;
 
 pub trait IProtoweldParser {
     fn parse(filename: &str) -> Result<ProtoweldParser, String>;
@@ -9,7 +9,7 @@ pub trait IProtoweldParser {
 pub enum Lang {
     GoLang,
     DotNet,
-    Rust
+    Rust,
 }
 
 impl FromStr for Lang {
@@ -20,10 +20,9 @@ impl FromStr for Lang {
             "GoLang" => Ok(Lang::GoLang),
             "DotNet" => Ok(Lang::DotNet),
             "Rust" => Ok(Lang::Rust),
-            _ => Err("Unsupported lang")
+            _ => Err("Unsupported lang"),
         }
     }
-
 }
 
 #[derive(Debug, Deserialize)]
@@ -31,12 +30,10 @@ pub struct Project {
     pub path: String,
     pub compiled_proto_folder: String,
     pub asociated_proto_files: Vec<String>,
-    pub lang: Lang
+    pub lang: Lang,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct ProtoweldParser {
-    pub active_projects: Vec<Project>
+    pub active_projects: Vec<Project>,
 }
-
-
