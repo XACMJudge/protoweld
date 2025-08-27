@@ -1,6 +1,9 @@
 use clap::Parser;
-use log::info;
-use protoweld::{parser::types::{IProtoweldParser, ProtoweldParser}, types::cli::Cli};
+use protoweld::{
+    executor::protoweld_executor::generate_protos,
+    parser::types::{IProtoweldParser, ProtoweldParser},
+    types::cli::Cli,
+};
 
 fn main() {
     env_logger::init();
@@ -14,8 +17,11 @@ fn main() {
     }
 
     let parser = result.unwrap();
+    let generation_result = generate_protos(&parser);
 
-    println!("{:?}", &parser);
+    if let Err(error) = generation_result {
+        panic!("[PROTOWELD] Generation failed. {}", error)
+    }
 
-    info!("Esta es una información de log")
+    println!("[PROTOWELD] Generation completed.")
 }

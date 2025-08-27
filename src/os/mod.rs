@@ -1,3 +1,3 @@
 pub mod types;
+pub mod unix_manager;
 pub mod shared;
-pub mod go_compiler;
