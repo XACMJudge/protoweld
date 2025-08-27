@@ -1,4 +1,4 @@
-pub mod algorithm;
 pub mod types;
-pub mod commands;
-pub mod io;
+pub mod parser;
+pub mod executor;
+pub mod compilers;

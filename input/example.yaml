@@ -1,0 +1,14 @@
+active_projects:
+  - path: "security"
+    asociated_proto_files:
+      - ./entities/y.proto
+      - ./entities/otro_proto.proto
+    lang: GoLang
+    compiled_proto_folder: "sec"
+
+  - path: "database-server"
+    asociated_proto_files:
+      - ./entities/x.proto
+      - ./entities/otro_proto_yyy.proto
+    lang: DotNet
+    compiled_proto_folder: "sec"

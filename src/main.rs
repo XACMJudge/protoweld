@@ -1,24 +1,21 @@
 use clap::Parser;
-use log::{error, info};
-use protoweld::types::{
-    cli::{Cli, Commands},
-    init_command::{InitActions, InitCommand},
-};
+use log::info;
+use protoweld::{parser::types::{IProtoweldParser, ProtoweldParser}, types::cli::Cli};
 
 fn main() {
     env_logger::init();
 
-    let cli = Cli::parse();
+    let args = Cli::parse();
 
-    match &cli.command {
-        Commands::Init => {
-            let res = InitCommand::init();
-            match res {
-                Ok(_) => println!(),
-                Err(e) => error!("{}", e),
-            }
-        }
-    };
+    let result = ProtoweldParser::parse(&args.filename);
+
+    if let Err(error) = result {
+        panic!("[PROTOWELD] Parser throw a error: {}", error)
+    }
+
+    let parser = result.unwrap();
+
+    println!("{:?}", &parser);
 
     info!("Esta es una información de log")
 }

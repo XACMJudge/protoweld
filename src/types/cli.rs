@@ -1,15 +1,11 @@
-use clap::{Parser, Subcommand};
+use clap::{Parser};
 
 #[derive(Parser, Debug)]
 #[command(version, about)] // Read from Cargo.toml
 #[command(propagate_version = true)]
 pub struct Cli {
 
-    #[command(subcommand)]
-    pub command: Commands,
-}
+    #[arg(short, long)]
+    pub filename: String
 
-#[derive(Subcommand, Debug)]
-pub enum Commands {
-    Init
 }
