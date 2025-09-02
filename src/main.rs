@@ -17,6 +17,7 @@ fn main() {
     }
 
     let parser = result.unwrap();
+    println!("{:?}", &parser);
     let generation_result = generate_protos(&parser, &args.filename);
 
     if let Err(error) = generation_result {

@@ -9,11 +9,11 @@ impl IProtoweldParser for ProtoweldParser {
             return Err(error.to_string());
         }
 
-        let json_result = serde_yaml::from_str::<ProtoweldParser>(&content.unwrap());
-        if let Err(error) = json_result {
+        let yaml_result = serde_yaml::from_str::<ProtoweldParser>(&content.unwrap());
+        if let Err(error) = yaml_result {
             return Err(error.to_string());
         }
 
-        Ok(json_result.unwrap())
+        Ok(yaml_result.unwrap())
     }
 }

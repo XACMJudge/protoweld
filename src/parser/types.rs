@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::str::FromStr;
+use std::{collections::HashMap, str::FromStr};
 
 pub trait IProtoweldParser {
     fn parse(filename: &str) -> Result<ProtoweldParser, String>;
@@ -31,6 +31,8 @@ pub struct Project {
     pub compiled_proto_folder: String,
     pub asociated_proto_files: Vec<String>,
     pub lang: Lang,
+    #[serde(default)]
+    pub compile_options: HashMap<String, String>
 }
 
 #[derive(Debug, Deserialize)]
