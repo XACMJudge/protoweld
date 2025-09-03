@@ -17,10 +17,11 @@ pub trait ProtobufCompiler: CompilerProperties {
         let mut failed_commands: Vec<&'static str> = Vec::new();
 
         for i in 0..deps.len() {
-            if let Err(_) = self
-                .os_manager()
-                .ensure_installation(&deps[i], &version_flags[i])
-            {
+            if let Err(_) = self.os_manager().execute_command(
+                &deps[i],
+                &vec![String::from(version_flags[i])],
+                true,
+            ) {
                 failed_commands.push(&deps[i]);
             }
         }
@@ -61,16 +62,22 @@ pub trait ProtobufCompiler: CompilerProperties {
                 );
                 return Err(err);
             }
-            let flag: String = format!("{}={}", key, value);
+
+            let flag = match value == "" {
+                true => format!("{}", key),
+                false => format!("{}={}", key, value),
+            };
             command_args.push(flag);
         }
 
         command_args.push(format!(
-            "{}={} {}={}",
-            &compiler_out_flag,
-            &project.compiled_proto_folder,
-            compiler_out_grpc_flag,
-            &project.compiled_proto_folder
+            "{}={}",
+            &compiler_out_flag, &project.compiled_proto_folder,
+        ));
+
+        command_args.push(format!(
+            "{}={}",
+            &compiler_out_grpc_flag, &project.compiled_proto_folder,
         ));
 
         if let Some(plugin) = compiler_plugin {
@@ -89,7 +96,10 @@ pub trait ProtobufCompiler: CompilerProperties {
             command_args.push(String::from(proto));
         }
 
-        if let Err(err) = self.os_manager().execute_command("protoc", &command_args) {
+        if let Err(err) = self
+            .os_manager()
+            .execute_command("protoc", &command_args, false)
+        {
             return Err(err);
         }
         Ok(())

@@ -1,63 +1,62 @@
 use std::{
-    io::Stdout,
     process::{Command, Stdio},
-    ptr::null,
+    time::Duration,
 };
 
 use log::info;
+use wait_timeout::ChildExt;
 
 use crate::os::types::{OSManager, UnixManager};
 
 impl OSManager for UnixManager {
-    fn ensure_installation(
-        &self,
-        command: &'static str,
-        version_flag: &'static str,
-    ) -> Result<(), String> {
-        let command_result = Command::new(command)
-            .arg(version_flag)
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .output();
-
-        if let Err(error) = command_result {
-            let error_str: String = error.to_string();
-            info!("Command {} exited with {}", command, &error_str);
-            return Err(error_str);
-        }
-
-        let output = command_result.unwrap();
-
-        if output.status.success() {
-            Ok(())
-        } else {
-            Err(String::from("Not installed"))
-        }
-    }
-
     fn execute_command(
         &self,
         command: &'static str,
         arguments: &Vec<String>,
+        dependency: bool,
     ) -> Result<(), String> {
-        let command_result = Command::new(command)
+        let child_result = Command::new(command)
             .args(arguments)
             .stdout(Stdio::null())
             .stdin(Stdio::null())
-            .output();
+            .stderr(Stdio::piped())
+            .spawn();
 
-        if let Err(error) = command_result {
-            let error_str: String = error.to_string();
-            info!("Command {} exited with {}", command, &error_str);
-            return Err(error_str);
+        if let Err(err) = child_result {
+            info!("Child spawn error: {}", err);
+            return Err(err.to_string());
         }
 
-        let output = command_result.unwrap();
+        let mut child = child_result.unwrap();
+        let time_out_duration = Duration::from_secs(if dependency { 1 } else { 5 });
 
-        if output.status.success() {
-            Ok(())
-        } else {
-            Err(String::from_utf8(output.stderr).unwrap())
+        match child.wait_timeout(time_out_duration).unwrap() {
+            Some(status) => {
+                if status.success() {
+                    Ok(())
+                } else {
+                    if let Some(stderr) = child.stderr.take() {
+                        Err(std::io::read_to_string(stderr).unwrap())
+                    } else {
+                        Err(format!("Dep command exited with status: {}", status))
+                    }
+                }
+            }
+            None => {
+                // Fine, some plugins just timeout
+                child.kill().unwrap();
+                child.wait().unwrap();
+
+                if dependency {
+                    Err(format!(
+                        "{} command timed out after {} seconds.",
+                        command,
+                        time_out_duration.as_secs()
+                    ))
+                } else {
+                    Ok(())
+                }
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ use std::{fs, path::PathBuf};
 use log::error;
 
 use crate::{
-    compilers::types::{GoCompiler, ProtobufCompiler},
+    compilers::types::{DotNetCompiler, GoCompiler, ProtobufCompiler, RustCompiler},
     os::shared::get_os_manager,
     parser::types::Lang,
 };
@@ -32,8 +32,13 @@ pub fn get_compiler(
             os_manager: platform_manager,
             input_file_path: canonical_path_result.unwrap(),
         })),
-        Lang::DotNet => todo!("To implement"),
-        Lang::Rust => todo!("To implement"),
-        _ => Err("Protoweld do not support this lang."),
+        Lang::DotNet => Ok(Box::new(DotNetCompiler {
+            os_manager: platform_manager,
+            input_file_path: canonical_path_result.unwrap(),
+        })),
+        Lang::Rust => Ok(Box::new(RustCompiler {
+            os_manager: platform_manager,
+            input_file_path: canonical_path_result.unwrap(),
+        })),
     }
 }

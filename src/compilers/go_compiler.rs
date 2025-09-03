@@ -1,7 +1,5 @@
 use std::path::PathBuf;
 
-use log::{error, info};
-
 use crate::{
     compilers::types::{CompilerProperties, GoCompiler, ProtobufCompiler},
     parser::types::Project,
@@ -31,6 +29,7 @@ impl ProtobufCompiler for GoCompiler {
             GO_VERSION_FLAGS.to_vec(),
             GO_MESSAGES_OUT_ARGUMENT,
             GO_GRPC_OUT_ARGUMENT,
+            Option::None,
         )
     }
 }
