@@ -20,6 +20,9 @@ static RUST_DEPS: [&'static str; 4] = [
 ];
 static RUST_VERSION_FLAGS: [&'static str; 4] = ["--version", "", "", ""];
 
+// FIX: Rust usa --prost_out y --tonic_out para el servidor grpc. Para los mensajes solo usa
+// --rs_out
+
 static RUST_MESSAGES_OUT_ARGUMENT: &'static str = "--rs_out";
 static RUST_GRPC_OUT_ARGUMENT: &'static str = "--tonic_out";
 
