@@ -30,6 +30,7 @@ pub struct Project {
     pub path: String,
     pub compiled_proto_folder: String,
     pub asociated_proto_files: Vec<String>,
+    pub plugin_path: Option<String>,
     pub lang: Lang,
     #[serde(default)]
     pub compile_options: HashMap<String, String>
