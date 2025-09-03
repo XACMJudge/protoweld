@@ -1,7 +1,8 @@
 active_projects:
-  - path: "database-server"
-    asociated_proto_files:
-      - ./entities/y.proto
-      - ./entities/otro_proto.proto
+  - path: database-server
+    associated_proto_files:
+      - ./entities/protos/database-server/operations.proto
+    compiled_proto_folder: "./database-server/"
     lang: GoLang
-    compiled_proto_folder: "sec"
+    compile_options:
+      "-I": entities

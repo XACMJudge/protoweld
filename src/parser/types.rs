@@ -29,7 +29,7 @@ impl FromStr for Lang {
 pub struct Project {
     pub path: String,
     pub compiled_proto_folder: String,
-    pub asociated_proto_files: Vec<String>,
+    pub associated_proto_files: Vec<String>,
     pub plugin_path: Option<String>,
     pub lang: Lang,
     #[serde(default)]
