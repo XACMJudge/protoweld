@@ -1,7 +1,7 @@
 use log::info;
 
 use crate::{
-    compilers::{shared::get_compiler, types::ProtobufCompiler},
+    compilers::{protobuf_compiler::ProtobufCompiler, shared::get_compiler},
     parser::types::ProtoweldParser,
 };
 

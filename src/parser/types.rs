@@ -5,7 +5,7 @@ pub trait IProtoweldParser {
     fn parse(filename: &str) -> Result<ProtoweldParser, String>;
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, PartialEq, Deserialize, Copy, Clone)]
 pub enum Lang {
     GoLang,
     DotNet,

@@ -3,7 +3,7 @@ use std::{fs, path::PathBuf};
 use log::error;
 
 use crate::{
-    compilers::types::{DotNetCompiler, GoCompiler, ProtobufCompiler, RustCompiler},
+    compilers::{langs_compilers::compiler_types::CompilerParams, protobuf_compiler::ProtobufCompiler},
     os::shared::get_os_manager,
     parser::types::Lang,
 };
@@ -27,18 +27,11 @@ pub fn get_compiler(
         return Err("Canonicalize base path failed");
     }
 
-    match lang {
-        Lang::GoLang => Ok(Box::new(GoCompiler {
-            os_manager: platform_manager,
-            input_file_path: canonical_path_result.unwrap(),
-        })),
-        Lang::DotNet => Ok(Box::new(DotNetCompiler {
-            os_manager: platform_manager,
-            input_file_path: canonical_path_result.unwrap(),
-        })),
-        Lang::Rust => Ok(Box::new(RustCompiler {
-            os_manager: platform_manager,
-            input_file_path: canonical_path_result.unwrap(),
-        })),
-    }
+    let params = CompilerParams {
+        lang: *lang,
+        input_file_path: canonical_path_result.unwrap(),
+        os_manager: platform_manager,
+    };
+
+    return Ok(params.into());
 }
