@@ -15,29 +15,27 @@ impl CompilerProperties for RustCompiler {
     }
 }
 
-static RUST_DEPS: [&'static str; 4] = [
-    "protoc",
-    "protoc-gen-rs",
-    "protoc-gen-tonic",
-    "protoc-gen-prost",
-];
-static RUST_VERSION_FLAGS: [&'static str; 4] = ["--version", "", "", ""];
+static RUST_DEPS: [&'static str; 3] = ["protoc", "protoc-gen-tonic", "protoc-gen-prost"];
+static RUST_VERSION_FLAGS: [&'static str; 3] = ["--version", "", ""];
 
-// FIX: Rust usa --prost_out y --tonic_out para el servidor grpc. Para los mensajes solo usa
-// --rs_out
-
-static RUST_MESSAGES_OUT_ARGUMENT: &'static str = "--rs_out";
+static RUST_MESSAGES_OUT_ARGUMENT: &'static str = "--prost_out";
 static RUST_GRPC_OUT_ARGUMENT: &'static str = "--tonic_out";
 
 impl ProtobufCompiler for RustCompiler {
     fn compile_project(&self, project: &crate::parser::types::Project) -> Result<(), String> {
-        self.assemble_compilation(
+        let result = self.assemble_compilation(
             project,
             RUST_DEPS.to_vec(),
             RUST_VERSION_FLAGS.to_vec(),
             RUST_MESSAGES_OUT_ARGUMENT,
             RUST_GRPC_OUT_ARGUMENT,
             Option::None,
-        )
+        );
+
+        if let Err(e) = result {
+            return Err(e);
+        }
+
+        return Ok(());
     }
 }
