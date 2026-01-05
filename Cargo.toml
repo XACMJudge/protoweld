@@ -1,17 +1,34 @@
 [package]
 name = "protoweld"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+authors = ["Sebastian Galindo <sebastian.galindo143@gmail.com>"]
+description = "A tool for automating Protocol Buffer compilation across multiple projects and programming languages"
+license = "GPL-3.0"
+repository = "https://github.com/XACMJudge/protoweld"
+homepage = "https://github.com/XACMJudge/protoweld"
+documentation = "https://docs.rs/protoweld"
+keywords = ["protobuf", "proto", "grpc", "code-generation", "compiler", "go", "rust", "dotnet", "csharp"]
+categories = ["development-tools", "build-tools"]
+readme = "README.md"
+include = [
+    "LICENSE",
+    "README.md",
+    "src/**/*",
+    "Cargo.toml",
+]
+
+[[bin]]
+name = "protoweld"
+path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4.5.43", features = ["derive"] }
 current_platform = "0.2.0"
 env_logger = "0.11.8"
-hex = "0.4.3"
 log = "0.4.27"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.142"
 serde_yaml = "0.9.34"
-sha2 = "0.10.9"
 wait-timeout = "0.2.1"
 walkdir = "2.5.0"

@@ -1,3 +1,8 @@
+//! Unix-like system implementation of the OSManager trait.
+//!
+//! This module provides Unix-specific implementations for file operations,
+//! command execution, and text manipulation. It handles Linux and macOS systems.
+
 use std::{
     fs,
     io::Write,
@@ -11,10 +16,35 @@ use wait_timeout::ChildExt;
 
 use crate::os::types::{OSManager, UnixManager};
 
+/// Timeout duration in seconds for dependency check commands (e.g., `protoc --version`).
+///
+/// Dependency checks should be fast, so a short timeout is used.
 static DEPENDENCY_COMMAND_TIMEOUT: u64 = 1;
+
+/// Timeout duration in seconds for non-dependency commands (e.g., actual proto compilation).
+///
+/// Compilation commands may take longer, so a longer timeout is used.
 static NON_DEPENDENCY_COMMAND_TIMEOUT: u64 = 5;
 
 impl OSManager for UnixManager {
+    /// Searches for a pattern in a file and returns the content with match position.
+    ///
+    /// This implementation reads the entire file into memory and searches for
+    /// the pattern using string matching. The position is returned as a byte offset.
+    ///
+    /// # Arguments
+    ///
+    /// * `file` - Path to the file to search
+    /// * `search` - String pattern to find
+    ///
+    /// # Returns
+    ///
+    /// * `Ok((String, usize))` - Tuple of (file content, byte position of first match)
+    /// * `Err(String)` - Error if file cannot be read
+    ///
+    /// # Note
+    ///
+    /// Returns `usize::MAX` as the position if the pattern is not found.
     fn grep(&self, file: PathBuf, search: &'static str) -> Result<(String, usize), String> {
         let content = fs::read_to_string(file);
         if let Err(e) = content {
@@ -31,6 +61,28 @@ impl OSManager for UnixManager {
         ))
     }
 
+    /// Executes a command with timeout handling and error capture.
+    ///
+    /// This implementation spawns a child process, captures stderr, and applies
+    /// a timeout based on whether this is a dependency check or a full compilation.
+    ///
+    /// # Arguments
+    ///
+    /// * `command` - The command to execute
+    /// * `arguments` - Command-line arguments
+    /// * `dependency` - If true, uses shorter timeout and fails on timeout
+    ///
+    /// # Returns
+    ///
+    /// * `Ok(())` - Command succeeded
+    /// * `Err(String)` - Error message with stderr or timeout information
+    ///
+    /// # Behavior
+    ///
+    /// - Dependency checks: 1 second timeout, failure on timeout
+    /// - Compilation commands: 5 second timeout, success on timeout (some plugins hang)
+    /// - Stderr is captured and returned in error messages
+    /// - Commands that timeout are killed
     fn execute_command(
         &self,
         command: &'static str,
@@ -86,6 +138,9 @@ impl OSManager for UnixManager {
         }
     }
 
+    /// Renames a file using the filesystem rename operation.
+    ///
+    /// This is an atomic operation on Unix systems when both paths are on the same filesystem.
     fn rename_file(&self, old: &PathBuf, nw: &PathBuf) -> Result<(), String> {
         let result = fs::rename(old, nw);
         if let Err(e) = result {
@@ -95,6 +150,10 @@ impl OSManager for UnixManager {
         }
     }
 
+    /// Replaces all occurrences of a pattern in a file.
+    ///
+    /// Reads the entire file, performs string replacement, and writes it back.
+    /// This operation is not atomic - if writing fails, the file may be corrupted.
     fn find_replace(&self, file: &PathBuf, pattern: String, replace: String) -> Result<(), String> {
         let content = fs::read_to_string(file);
         if let Err(e) = content {
@@ -110,6 +169,14 @@ impl OSManager for UnixManager {
         }
     }
 
+    /// Inserts text at a specific byte position in a file.
+    ///
+    /// This operation reads the file, inserts the text at the specified position,
+    /// and writes it back. The position is a byte offset, not a character offset.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the position exceeds the file length.
     fn insert_in_position(
         &self,
         file: &PathBuf,
@@ -139,6 +206,9 @@ impl OSManager for UnixManager {
         }
     }
 
+    /// Creates a new file and writes content to it.
+    ///
+    /// This will overwrite any existing file at the specified path.
     fn write_new_file(&self, file: &PathBuf, text: String) -> Result<(), String> {
         let file_result = fs::File::create(file);
         if let Err(e) = file_result {

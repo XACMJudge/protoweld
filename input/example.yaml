@@ -15,7 +15,7 @@ active_projects:
       - ./entities/protos/schemas/security.proto
       - ./entities/protos/database-server/operations.proto
     compiled_proto_folder: "./security/Protos"
-    plugin_path: /home/talkysafe143/.nuget/packages/grpc.tools/2.72.0/tools/linux_x64/grpc_csharp_plugin
+    plugin_path: /home/user/.nuget/packages/grpc.tools/2.72.0/tools/linux_x64/grpc_csharp_plugin
     compile_options:
       "-I": entities
       "--descriptor_set_out": ./security/descriptors.pb

@@ -1,0 +1,30 @@
+# Exclude build artifacts
+target/
+Cargo.lock
+
+# Exclude development files
+.git/
+.gitignore
+.cargo/
+
+# Exclude IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Exclude example/test files that aren't needed in the published crate
+input/
+
+# Exclude documentation build artifacts
+doc/
+
+# Exclude CI/CD files (optional, but common)
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Exclude other development files
+*.log
+*.tmp
