@@ -1,6 +1,9 @@
-use std::path::PathBuf;
+use std::{collections::HashSet, path::PathBuf};
 
 use crate::{os::types::OSManager, parser::types::Project};
+
+static PACKAGE_KEYWORD: &'static str = "package";
+static SEMICOLON: &'static str = ";";
 
 pub trait CompilerProperties {
     fn os_manager(&self) -> &Box<dyn OSManager>;
@@ -9,6 +12,41 @@ pub trait CompilerProperties {
 
 pub trait ProtobufCompiler: CompilerProperties {
     fn compile_project(&self, project: &Project) -> Result<(), String>;
+    fn get_packages_set(&self, protos: &Vec<String>) -> Result<HashSet<String>, String> {
+        let mut result: HashSet<String> = HashSet::new();
+        for proto in protos.iter() {
+            let find_package = self
+                .os_manager()
+                .grep(PathBuf::from(&proto), PACKAGE_KEYWORD);
+            if let Err(e) = find_package {
+                return Err(e);
+            }
+
+            let grep_result: (String, usize) = find_package.unwrap();
+
+            if grep_result.1 == usize::MAX {
+                return Err(String::from(format!(
+                    "Package keyword missing in {}",
+                    &proto
+                )));
+            }
+
+            let cut_string = grep_result
+                .0
+                .clone()
+                .split_off(grep_result.1)
+                .split_off(PACKAGE_KEYWORD.len() + 1);
+
+            let mut semicolon_split = cut_string.split(SEMICOLON);
+
+            match semicolon_split.next() {
+                Some(name) => result.insert(name.into()),
+                None => return Err(String::from("Bad .proto structure - Keyword package")),
+            };
+        }
+
+        return Ok(result);
+    }
     fn ensure_dependencies(
         &self,
         deps: &Vec<&'static str>,
