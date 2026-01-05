@@ -14,18 +14,30 @@
 
 ## Installation
 
+### Standard Installation
+
+Protoweld is available on [crates.io](https://crates.io/crates/protoweld) and can be installed using Cargo:
+
+```bash
+cargo install protoweld
+```
+
+After installation, the `protoweld` binary will be available in your `$HOME/.cargo/bin` directory (make sure it's in your `PATH`).
+
 ### Prerequisites
 
 Protoweld requires the following tools to be installed on your system:
 
-- **Rust** (for building Protoweld itself)
-- **Protocol Buffers Compiler** (`protoc`) - [Installation Guide](https://grpc.io/docs/protoc-installation/)
+- **Rust and Cargo** - Required for installation via `cargo install`. [Install Rust](https://www.rust-lang.org/tools/install)
+- **Protocol Buffers Compiler** (`protoc`) - Required for compiling proto files. [Installation Guide](https://grpc.io/docs/protoc-installation/)
 
 ### Building from Source
 
+If you prefer to build from source or want to use the latest development version:
+
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/XACMJudge/protoweld.git
 cd protoweld
 ```
 
