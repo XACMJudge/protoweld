@@ -233,7 +233,7 @@ By default, when the gRPC plugins (`protoc-gen-prost` for message types and `pro
 
 ## Project Structure
 
-```
+```no-run
 protoweld/
 ├── Cargo.toml              # Rust project configuration
 ├── README.md               # This file
@@ -352,7 +352,7 @@ Contributions are welcome! If you'd like to help implement any of these features
 
 ## License
 
-See the [LICENSE](LICENSE) file for details.
+See the [LICENSE](https://github.com/XACMJudge/protoweld/blob/main/LICENSE) file for details.
 
 ## Acknowledgments
 
