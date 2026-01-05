@@ -9,7 +9,7 @@ repository = "https://github.com/XACMJudge/protoweld"
 homepage = "https://github.com/XACMJudge/protoweld"
 documentation = "https://docs.rs/protoweld"
 keywords = ["protobuf", "grpc", "code-generation", "compiler"]
-categories = ["development-tools", "build-tools"]
+categories = ["command-line-utilities", "development-tools"]
 readme = "README.md"
 include = [
     "LICENSE",
